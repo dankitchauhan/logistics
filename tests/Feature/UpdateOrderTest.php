@@ -31,11 +31,12 @@ class UpdateOrderTest extends TestCase
      */
     public function updateOrderStatusTest()
     {
-        echo "\nIntegration Test Related to update order.\n";
-        echo "\nTest for checking a valid response is written when updating order status.\n";
+        echo "\n <<<<<< Test cases related to update order >>>>>> \n";
+        echo "\n  # Test for checking a valid response is written when updating order status.\n";
         $orderId = $this->order->first()->id;
         $this->partialMock(
-            OrderRepository::class, function ($mock) use ($orderId) {
+            OrderRepository::class,
+            function ($mock) use ($orderId) {
                 $mock->shouldReceive()->update($orderId)->andReturn(true);
             }
         );
@@ -44,7 +45,7 @@ class UpdateOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson(
                 [
-                'status' => "SUCCESS"
+                    'status' => "SUCCESS"
                 ]
             );
     }
@@ -58,7 +59,7 @@ class UpdateOrderTest extends TestCase
      */
     public function updateOrderValidationTestIfOrderIdIsNotCorrect()
     {
-        echo "\nTest for checking a valid response is written when validation fails.\n";
+        echo "\n  # Test for checking a valid response is written when validation fails.\n";
         //Incorrect order id
         $orderId = "asdsa";
         $response = $this->json('PATCH', '/orders/' . $orderId, ['status' => 'TAKEN']);
@@ -66,7 +67,7 @@ class UpdateOrderTest extends TestCase
             ->assertStatus(400)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -80,14 +81,14 @@ class UpdateOrderTest extends TestCase
      */
     public function updateOrderStatusValidationTest()
     {
-        echo "\nTest for checking a valid response is written when status is sent blank.\n";
+        echo "\n  # Test for checking a valid response is written when status is sent blank.\n";
         $orderId = $this->order->first()->id;
         $response = $this->json('PATCH', '/orders/' . $orderId, ['status' => '']);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -101,7 +102,7 @@ class UpdateOrderTest extends TestCase
      */
     public function updateOrderRaceConditionTest()
     {
-        echo "\nTest for checking Race conditions.\n";
+        echo "\n  # Test for checking Race conditions.\n";
         $orderId = $this->order->first()->id;
         $this->json('PATCH', '/orders/' . $orderId, ['status' => 'TAKEN']);
         $result = $this->json('PATCH', '/orders/' . $orderId, ['status' => 'TAKEN']);
@@ -109,7 +110,7 @@ class UpdateOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson(
                 [
-                'error' => "Order is already taken."
+                    'error' => "Order is already taken."
                 ]
             );
     }
@@ -123,14 +124,14 @@ class UpdateOrderTest extends TestCase
      */
     public function updateOrderStatusBadRequestTest()
     {
-        echo "\nTest for checking a valid response is written when bad request is sent.\n";
+        echo "\n  # Test for checking a valid response is written when bad request is sent.\n\n";
         $orderId = $this->order->first()->id;
         $response = $this->json('PATCH', '/orders/' . $orderId, ['status' => 'TOFFE']);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }

@@ -58,7 +58,8 @@ class ListOrderTest extends TestCase
      */
     public function orderListSuccessfullyReturnedTest()
     {
-        echo "\nOrder list successfully returned test.\n";
+        echo "\n <<<<<< Test cases related to list order >>>>>> \n";
+        echo "\n  # Order list successfully returned test.\n";
         $this->orderRepositoryMock->shouldReceive('list')->withAnyArgs()->once()->andReturn($this->order);
         $request = $this->createRequest($this->params);
         $response = $this->orderControllerMock->orderList($request);
@@ -74,7 +75,7 @@ class ListOrderTest extends TestCase
      */
     public function orderListIsBlankTest()
     {
-        echo "\nTest for checking a blank order list is written and properly handled.\n";
+        echo "\n  # Test for checking a blank order list is written and properly handled.\n";
         $this->orderRepositoryMock->shouldReceive('list')->withAnyArgs()->once()->andReturn([]);
         $request = $this->createRequest($this->params);
         $response = $this->orderControllerMock->orderList($request);
@@ -93,8 +94,7 @@ class ListOrderTest extends TestCase
      */
     public function orderListReturnSuccessfully()
     {
-        echo "\nUnit Test Related to list order.\n";
-        echo "\nTest for checking a order list is return or not..\n";
+        echo "\n  # Test for checking a order list is return or not.\n";
         $orderRepo = new OrderRepository(new Order);
         $order = $orderRepo->list($this->page, $this->count);
         $this->assertInstanceOf(Collection::class, $order);
@@ -108,7 +108,7 @@ class ListOrderTest extends TestCase
      */
     public function orderListBlankArray()
     {
-        echo "\nTest for checking a blank array is return if order are not found according to given page and limit.\n";
+        echo "\n  # Test for checking a blank array is return if order are not found according to given page and limit.\n";
         $orderRepo = new OrderRepository(new Order);
         $order = $orderRepo->list(312321, $this->count);
         $this->assertSame([], $order);
@@ -124,7 +124,7 @@ class ListOrderTest extends TestCase
      */
     public function testingItContainsValidationRules()
     {
-        echo "\nTest for checking validation rules on list order request.\n";
+        echo "\n  # Test for checking validation rules on list order request.\n";
         $request = new ListOrderRequest();
         $this->assertEquals(
             [
@@ -149,7 +149,7 @@ class ListOrderTest extends TestCase
      */
     public function testingItContainsProperValidationMessages()
     {
-        echo "\nTest for checking validation messages on list order request.\n";
+        echo "\n  # Test for checking validation messages on list order request.\n\n";
         $request = new ListOrderRequest();
 
         $this->assertEquals(

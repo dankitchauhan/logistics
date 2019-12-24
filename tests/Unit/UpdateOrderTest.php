@@ -72,7 +72,8 @@ class UpdateOrderTest extends TestCase
      */
     public function orderIsSuccessfullyUpdatedTest()
     {
-        echo "\nTest Order is successfully updated .\n";
+        echo "\n <<<<<< Test cases related to update order >>>>>> \n\n";
+        echo "\n  # Test Order is successfully updated.\n";
         $this->orderRepositoryMock->shouldReceive('update')->withAnyArgs()->once()
             ->andReturn(true);
         $request = $this->createRequest($this->params);
@@ -92,7 +93,7 @@ class UpdateOrderTest extends TestCase
      */
     public function orderKeyDoesNotExist()
     {
-        echo "\nTest when order key not found.\n";
+        echo "\n  # Test when order key not found.\n";
         $request = $this->createRequest($this->params);
         $response = $this->orderControllerMock->updateOrderStatus("sfsdf", $request);
         $data = json_decode($response->getContent(), true);
@@ -110,7 +111,7 @@ class UpdateOrderTest extends TestCase
      */
     public function orderIsAlreadyTakenTest()
     {
-        echo "\nOrder is already taken test.\n";
+        echo "\n  # Order is already taken test.\n";
         $order = factory(Order::class)->create(
             [
                 'start_latitude' => $this->startLatitude,
@@ -138,7 +139,7 @@ class UpdateOrderTest extends TestCase
      */
     public function exceptionOnUpdatingTheOrder()
     {
-        echo "\nTest for handling exception on update order.\n";
+        echo "\n  # Test for handling exception on update order.\n";
         $this->orderRepositoryMock->shouldReceive('update')->withAnyArgs()->once()
             ->andThrows(new Exception());
         $request = $this->createRequest($this->params);
@@ -158,7 +159,7 @@ class UpdateOrderTest extends TestCase
      */
     public function orderStatusIsUpdatedSuccessfully()
     {
-        echo "\nOrder repository updated order successfully test.\n";
+        echo "\n  # Order repository updated order successfully test.\n";
         $orderRepo = new OrderRepository(new Order);
         $status = $orderRepo->update($this->order->id);
         $this->assertSame(true, $status);
@@ -173,7 +174,7 @@ class UpdateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenOrderIsAlreadyTaken()
     {
-        echo "\nAn exception is thrown when order is already taken.\n";
+        echo "\n  # An exception is thrown when order is already taken.\n";
         $this->order = factory(Order::class)->create(
             [
                 'start_latitude' => $this->startLatitude,
@@ -199,7 +200,7 @@ class UpdateOrderTest extends TestCase
      */
     public function testingItContainsValidationRules()
     {
-        echo "\nTest for checking validation rules on update order request.\n";
+        echo "\n  # Test for checking validation rules on update order request.\n";
         $request = new UpdateOrderRequest();
         $this->assertEquals(
             [
@@ -219,7 +220,7 @@ class UpdateOrderTest extends TestCase
      */
     public function testingItContainsProperValidationMessages()
     {
-        echo "\nTest for checking validation message on update order request.\n";
+        echo "\n  # Test for checking validation message on update order request.\n\n";
         $request = new UpdateOrderRequest();
         $this->assertEquals(
             [

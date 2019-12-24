@@ -92,7 +92,9 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderSuccessfulTest()
     {
-        echo "\nOrder is successfully created test.\n";
+        echo "\n <<<<<< Starting Unit Test Cases >>>>>> \n";
+        echo "\n <<<<<< Test cases related to create order >>>>>> \n";
+        echo "\n  # Order is successfully created test.\n";
         $this->createGoogleApiLocationMock();
         $this->orderRepositoryMock->shouldReceive('create')->withAnyArgs()->once()
             ->andReturn($this->order);
@@ -116,7 +118,7 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderValidationErrorIsReturnWhenOriginAndDestinationAreSame()
     {
-        echo "\nTest for checking a bad request when origin and destination values are same.\n";
+        echo "\n  # Test for checking a bad request when origin and destination values are same.\n";
         $params = [
             'origin' => [$this->startLatitude, $this->startLongitude],
             'destination' => [$this->startLatitude, $this->startLongitude]
@@ -135,7 +137,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenProperInputsAreNotProvidedInThrOrderRepository()
     {
-        echo "\n Test for checking returned exception from repository is properly handeled or not.\n";
+        echo "\n  # Test for checking returned exception from repository is properly handeled or not.\n";
         $this->createGoogleApiLocationMock();
         $request = $this->createRequest($this->params);
         $response = $this->orderControllerMock->createOrder($request);
@@ -152,7 +154,7 @@ class CreateOrderTest extends TestCase
      */
     public function testingItContainsValidationRules()
     {
-        echo "\nTest for checking validation rules on create order request.\n";
+        echo "\n  # Test for checking validation rules on create order request.\n";
         $request = new CreateOrderRequest();
         $this->assertEquals(
             [
@@ -173,7 +175,7 @@ class CreateOrderTest extends TestCase
      */
     public function testingItContainsProperValidationMessages()
     {
-        echo "\nTest for checking proper validation messeges are returned on create order request.\n";
+        echo "\n  # Test for checking proper validation messeges are returned on create order request.\n";
         $request = new CreateOrderRequest();
         $this->assertEquals(
             [
@@ -199,7 +201,7 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderTest()
     {
-        echo "\nUnit Test Related to create order.\n";
+        echo "\n  # Unit Test Related to create order.\n";
         $orderRepo = new OrderRepository(new Order);
         $order = $orderRepo->create($this->startLatitude, $this->startLongitude, $this->endLatitude, $this->endLongitude, $this->distance);
         $data = $order->toArray();
@@ -230,7 +232,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenStartLatitudeValueIsNull()
     {
-        echo "\nGet an exception when start latitude value is null .\n";
+        echo "\n  # Get an exception when start latitude value is null.\n";
         $this->expectException(Exception::class);
         $orderRepo = new OrderRepository(new Order);
         $orderRepo->create(null, $this->startLongitude, $this->endLatitude, $this->endLongitude, $this->distance);
@@ -245,7 +247,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenStartLongitudeValueIsNull()
     {
-        echo "\nGet an exception when start longitude value is null .\n";
+        echo "\n  # Get an exception when start longitude value is null.\n";
         $this->expectException(Exception::class);
         $orderRepo = new OrderRepository(new Order);
         $orderRepo->create($this->startLatitude, null, $this->endLatitude, $this->endLongitude, $this->distance);
@@ -260,7 +262,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenEndLatitudeValueIsNull()
     {
-        echo "\nGet an exception when end latitude value is null .\n";
+        echo "\n  # Get an exception when end latitude value is null.\n";
         $this->expectException(Exception::class);
         $orderRepo = new OrderRepository(new Order);
         $orderRepo->create($this->startLatitude, $this->startLongitude, null, $this->endLongitude, $this->distance);
@@ -275,7 +277,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenEndLongitudeValueIsNull()
     {
-        echo "\nGet an exception when end longitude value is null .\n";
+        echo "\n  # Get an exception when end longitude value is null.\n";
         $this->expectException(Exception::class);
         $orderRepo = new OrderRepository(new Order);
         $orderRepo->create($this->startLatitude, $this->startLongitude, $this->endLatitude, null, $this->distance);
@@ -290,7 +292,7 @@ class CreateOrderTest extends TestCase
      */
     public function exceptionIsThrownWhenDistanceIsNull()
     {
-        echo "\nGet an exception when distance is not provided .\n";
+        echo "\n  # Get an exception when distance is not provided.\n";
         $this->expectException(Exception::class);
         $orderRepo = new OrderRepository(new Order);
         $orderRepo->create($this->startLatitude, $this->startLongitude, $this->endLatitude, $this->endLongitude, null);
@@ -304,7 +306,7 @@ class CreateOrderTest extends TestCase
      */
     public function guzzleRequestTest()
     {
-        echo "\nTesting guzzle request is sent or not .\n";
+        echo "\n  # Testing guzzle request is sent or not.\n\n";
         $mock = new MockHandler(
             [
                 new Response(200, [], 'The body!'),

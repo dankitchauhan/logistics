@@ -39,11 +39,13 @@ class ListOrderTest extends TestCase
      */
     public function orderListTest()
     {
-        echo "\nTest for checking a proper json return on successful.\n";
+        echo "\n <<<<<< Test cases related to list order >>>>>> \n";
+        echo "\n  # Test for checking a proper json return on successful.\n";
         $page = $this->page;
         $limit = $this->count;
         $result = $this->mock(
-            OrderRepository::class, function ($mock) use ($page, $limit) {
+            OrderRepository::class,
+            function ($mock) use ($page, $limit) {
                 $mock->shouldReceive()->list($page, $limit)->andReturn($this->order);
             }
         );
@@ -51,11 +53,11 @@ class ListOrderTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson(
             [
-            [
-                "id" => $this->order->first()->id,
-                "distance" => 467560,
-                "status" => "UNASSIGNED"
-            ]
+                [
+                    "id" => $this->order->first()->id,
+                    "distance" => 467560,
+                    "status" => "UNASSIGNED"
+                ]
             ]
         );
     }
@@ -69,7 +71,7 @@ class ListOrderTest extends TestCase
      */
     public function orderListValidationTest()
     {
-        echo "\nTest for validation error on incorrect page number\n";
+        echo "\n  # Test for validation error on incorrect page number.\n";
         $response = $this->json('GET', '/orders', ['page' => 'one', 'limit' => $this->count]);
         $response->assertStatus(422);
         $response->assertJsonStructure(['error']);
@@ -84,12 +86,12 @@ class ListOrderTest extends TestCase
      */
     public function orderListValidationTestForPageNumber()
     {
-        echo "\nTest for checking page number must start with one.\n";
+        echo "\n  # Test for checking page number must start with one.\n";
         $response = $this->json('GET', '/orders', ['page' => 0, 'limit' => $this->count]);
         $response->assertStatus(422);
         $response->assertJsonStructure(
             [
-            'error'
+                'error'
             ]
         );
     }
@@ -103,7 +105,7 @@ class ListOrderTest extends TestCase
      */
     public function testForCheckingABlankArrayIsReturnWhenListIsEmpty()
     {
-        echo "\nest for checking a blank array is return when orders are not found.\n";
+        echo "\n  # Test for checking a blank array is return when orders are not found.\n\n";
         $response = $this->json('GET', '/orders', ['page' => 5433, 'limit' => $this->count]);
         $response->assertStatus(400);
         $response->assertJson([]);

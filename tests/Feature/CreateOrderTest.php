@@ -26,15 +26,17 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderTest()
     {
-        echo "\nOrder successfully created test.\n";
+        echo "\n <<<<<< Starting Integration Test Cases >>>>>> \n";
+        echo "\n <<<<<< Test cases related to create order >>>>>> \n";
+        echo "\n  # Order is successfully created test.\n";
         $order = factory(Order::class)->make(
             [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 0,
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 0,
             ]
         );
         $mock = $this->partialMock(OrderRepository::class);
@@ -45,9 +47,9 @@ class CreateOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure(
                 [
-                'id',
-                'distance',
-                'status'
+                    'id',
+                    'distance',
+                    'status'
                 ]
             );
     }
@@ -61,13 +63,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderValidationErrorIsReturnWhenOriginAndDestinationAreSame()
     {
-        echo "\nTest for checking a valid response is written or not when start longitude value is missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when start longitude value is missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLatitude, $this->startLongitude], "destination" => [$this->startLatitude, $this->startLongitude]]);
         $response
             ->assertStatus(400)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -81,13 +83,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderStartLongitudeMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when start longitude value is missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when start longitude value is missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLatitude], "destination" => [$this->endLatitude, $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -101,13 +103,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderStartLatitudeMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when start latitude value is missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when start latitude value is missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLongitude], "destination" => [$this->endLatitude, $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -121,13 +123,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderEndtLatitudeMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when end latitude value is missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when end latitude value is missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLongitude, $this->startLatitude], "destination" => [$this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -141,13 +143,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderDestinationValueMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when destination value's are missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when destination value's are missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLongitude, $this->startLatitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -161,13 +163,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderOriginValueMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when origin value's are missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when origin value's are missing.\n";
         $response = $this->json('POST', '/orders', ["destination" => [$this->endLatitude, $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -182,13 +184,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderEndtLongitudeMissingValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not when end longitude value is missing.\n";
+        echo "\n  # Test for checking a valid response is written or not when end longitude value is missing.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLongitude, $this->startLatitude], "destination" => [$this->endLatitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -202,13 +204,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderStartLatitudeValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not while validation fails.\n";
+        echo "\n  # Test for checking a valid response is written or not while validation fails.\n";
         $response = $this->json('POST', '/orders', ['origin' => ["32asdasd.9697", $this->startLongitude], "destination" => [$this->endLatitude, $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -222,13 +224,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderEndtLongitudeValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not while validation fails.\n";
+        echo "\n  # Test for checking a valid response is written or not while validation fails.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLatitude, $this->startLongitude], "destination" => [$this->endLatitude, "-91wweds.4243"]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -242,13 +244,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderEndtLatitudeValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not while validation fails.\n";
+        echo "\n  # Test for checking a valid response is written or not while validation fails.\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLatitude, $this->startLongitude], "destination" => ["73dfd.2343", $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
@@ -263,13 +265,13 @@ class CreateOrderTest extends TestCase
      */
     public function createOrderStartLongitudeValidationTest()
     {
-        echo "\nTest for checking a valid response is written or not while validation fails.\n";
+        echo "\n  # Test for checking a valid response is written or not while validation fails.\n\n";
         $response = $this->json('POST', '/orders', ['origin' => [$this->startLatitude, "-94wfsd6.80322"], "destination" => [$this->endLatitude, $this->endLongitude]]);
         $response
             ->assertStatus(422)
             ->assertJsonStructure(
                 [
-                'error'
+                    'error'
                 ]
             );
     }
