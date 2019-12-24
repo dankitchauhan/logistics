@@ -17,7 +17,6 @@ namespace App\Repository;
 
 use App\Models\Order;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
@@ -92,6 +91,7 @@ class OrderRepository
      */
     public function update($orderId)
     {
+        $STATUS = 0;
         try {
             $orderStatus = Order::where('id', $orderId)
                 ->where('status', self::$UNASSIGNED)->update(
@@ -99,7 +99,7 @@ class OrderRepository
                         'status' => self::$TAKEN
                     ]
                 );
-            if ($orderStatus == self::$UNASSIGNED) {
+            if ($orderStatus == $STATUS) {
                 throw new Exception("Order is already taken.");
             }
         } catch (Exception $e) {
