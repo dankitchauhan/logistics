@@ -33,9 +33,6 @@ use Illuminate\Http\Response;
  */
 class OrderRepository
 {
-    protected static $UNASSIGNED = 0;
-    protected static $TAKEN = 1;
-
     /**
      * Class constructor
      *
@@ -73,7 +70,7 @@ class OrderRepository
                     'end_latitude' => $endLatitude,
                     'end_longitude' => $endLongitude,
                     'distance_in_meters' => $distance,
-                    'status' => self::$UNASSIGNED,
+                    'status' => ORDER::UNASSIGNED,
                 ]
             );
         } catch (Exception $e) {
@@ -91,15 +88,14 @@ class OrderRepository
      */
     public function update($orderId)
     {
-        $STATUS = 0;
         try {
             $orderStatus = Order::where('id', $orderId)
-                ->where('status', self::$UNASSIGNED)->update(
+                ->where('status', ORDER::UNASSIGNED)->update(
                     [
-                        'status' => self::$TAKEN
+                        'status' => ORDER::TAKEN
                     ]
                 );
-            if ($orderStatus == $STATUS) {
+            if ($orderStatus == ORDER::UPDATE_STATUS) {
                 throw new Exception("Order is already taken.");
             }
         } catch (Exception $e) {

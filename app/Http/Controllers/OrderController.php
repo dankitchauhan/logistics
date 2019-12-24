@@ -40,9 +40,6 @@ use Illuminate\Http\Response;
  */
 class OrderController extends Controller
 {
-    protected static $UNASSIGNED = 0;
-    protected static $TAKEN = 1;
-
     /**
      * Class Constructor
      *
@@ -198,7 +195,7 @@ class OrderController extends Controller
             );
         }
 
-        if ($order->status == self::$TAKEN) {
+        if ($order->status == ORDER::TAKEN) {
             return response()->json(
                 [
                     'error' => 'Order is already taken.'

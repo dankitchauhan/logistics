@@ -30,6 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
+    const UNASSIGNED = 0;
+    const TAKEN = 1;
+    const UPDATE_STATUS = 0;
+
     protected $fillable = [
         'start_latitude',
         'start_longitude',
