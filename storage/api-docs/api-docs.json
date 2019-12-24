@@ -1,0 +1,178 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Logistics",
+        "description": "Logistics API's",
+        "contact": {
+            "email": "ankit.chauhan@nagarro.com"
+        },
+        "license": {
+            "name": "Nginx",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List order's",
+                "description": "This api is used to list all order based on\n     *          page and number of limit provided.",
+                "operationId": "App\\Http\\Controllers\\OrderController::orderList",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit per page.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return Order list."
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "422": {
+                        "description": "Invalid Parameters"
+                    },
+                    "500": {
+                        "description": "INTERNAL_SERVER_ERROR"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create new order",
+                "description": "Create a new order with a valid origin and destination latitude and longitude",
+                "operationId": "createOrder",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "origin": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "destination": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "origin": [
+                                        "28.4595",
+                                        "77.0266"
+                                    ],
+                                    "destination": [
+                                        "28.7041",
+                                        "77.1025"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "422": {
+                        "description": "Invalid Parameters"
+                    },
+                    "500": {
+                        "description": "INTERNAL_SERVER_ERROR"
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "patch": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update order status",
+                "description": "This api is used to update order status.",
+                "operationId": "App\\Http\\Controllers\\OrderController::updateOrderStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Fixed string as TAKEN.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS."
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
+                    },
+                    "422": {
+                        "description": "Invalid Parameters"
+                    },
+                    "500": {
+                        "description": "INTERNAL_SERVER_ERROR"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "destination_addresses": [
+      "315 North Dr, San Antonio, TX 78201, USA"
+    ],
+    "origin_addresses": [
+      "16100 Preston Rd, Dallas, TX 75248, USA"
+    ],
+    "rows": [
+      {
+        "elements": [
+          {
+            "distance": {
+              "text": "468 km",
+              "value": 467560
+            },
+            "duration": {
+              "text": "4 hours 25 mins",
+              "value": 15887
+            },
+            "status": "OK"
+          }
+        ]
+      }
+    ],
+    "status": "OK"
+  }
