@@ -9,6 +9,7 @@ use Tests\TestCase;
 use App\Models\Order;
 use App\Repository\OrderRepository;
 use App\Rules\MatchString;
+use App\Services\GoogleLocationApi;
 use Exception;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -32,18 +33,19 @@ class UpdateOrderTest extends TestCase
         parent::setUp();
         $this->order = factory(Order::class)->create(
             [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 0,
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 0,
             ]
         );
         $this->orderRepositoryMock = \Mockery::mock(OrderRepository::class);
+        $this->googleLocationApiMock = \Mockery::mock(GoogleLocationApi::class);
         $this->orderControllerMock = $this->app->instance(
             OrderController::class,
-            new OrderController($this->orderRepositoryMock)
+            new OrderController($this->orderRepositoryMock, $this->googleLocationApiMock)
         );
         $this->params = [
             'TAKEN'
@@ -111,12 +113,12 @@ class UpdateOrderTest extends TestCase
         echo "\nOrder is already taken test.\n";
         $order = factory(Order::class)->create(
             [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 1,
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 1,
             ]
         );
         $request = $this->createRequest($this->params);
@@ -174,12 +176,12 @@ class UpdateOrderTest extends TestCase
         echo "\nAn exception is thrown when order is already taken.\n";
         $this->order = factory(Order::class)->create(
             [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 1,
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 1,
             ]
         );
         $this->expectException(Exception::class);
@@ -201,8 +203,9 @@ class UpdateOrderTest extends TestCase
         $request = new UpdateOrderRequest();
         $this->assertEquals(
             [
-            'status' => ['required', new MatchString]
-            ], $request->rules()
+                'status' => ['required', new MatchString]
+            ],
+            $request->rules()
         );
     }
 
@@ -220,8 +223,9 @@ class UpdateOrderTest extends TestCase
         $request = new UpdateOrderRequest();
         $this->assertEquals(
             [
-            'status.required' => 'Status values is required'
-            ], $request->messages()
+                'status.required' => 'Status values is required'
+            ],
+            $request->messages()
         );
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Order;
 use App\Repository\OrderRepository;
+use App\Services\GoogleLocationApi;
 use Illuminate\Database\Eloquent\Collection;
 
 class ListOrderTest extends TestCase
@@ -27,9 +28,10 @@ class ListOrderTest extends TestCase
         parent::setUp();
         $this->order = factory(Order::class, 5)->create();
         $this->orderRepositoryMock = \Mockery::mock(OrderRepository::class);
+        $this->googleLocationApiMock = \Mockery::mock(GoogleLocationApi::class);
         $this->orderControllerMock = $this->app->instance(
             OrderController::class,
-            new OrderController($this->orderRepositoryMock)
+            new OrderController($this->orderRepositoryMock, $this->googleLocationApiMock)
         );
         $this->params = [
             $this->page, $this->count
@@ -126,13 +128,14 @@ class ListOrderTest extends TestCase
         $request = new ListOrderRequest();
         $this->assertEquals(
             [
-            'page' => ['required', 'numeric', function ($attribute, $value, $fail) {
-                if ($value < 1) {
-                    $fail($attribute . ' must be greater than 0.');
-                }
-            }],
-            'limit' => 'required|numeric'
-            ], $request->rules()
+                'page' => ['required', 'numeric', function ($attribute, $value, $fail) {
+                    if ($value < 1) {
+                        $fail($attribute . ' must be greater than 0.');
+                    }
+                }],
+                'limit' => 'required|numeric'
+            ],
+            $request->rules()
         );
     }
 
@@ -151,11 +154,12 @@ class ListOrderTest extends TestCase
 
         $this->assertEquals(
             [
-            'page.required' => 'Page number is required',
-            'page.numeric' => 'Page number must be a numeric value',
-            'limit.required' => 'Limit values is required',
-            'limit.numeric' => 'Limit number must be a numeric value'
-            ], $request->messages()
+                'page.required' => 'Page number is required',
+                'page.numeric' => 'Page number must be a numeric value',
+                'limit.required' => 'Limit values is required',
+                'limit.numeric' => 'Limit number must be a numeric value'
+            ],
+            $request->messages()
         );
     }
 }

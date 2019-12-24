@@ -14,6 +14,7 @@ use Exception;
 use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\File;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
@@ -37,10 +38,12 @@ class CreateOrderTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->orderRepositoryMock = \Mockery::mock(OrderRepository::class);
+        $this->googleLocationApiMock = \Mockery::mock(GoogleLocationApi::class);
         $this->orderControllerMock = $this->app->instance(
             OrderController::class,
-            new OrderController($this->orderRepositoryMock)
+            new OrderController($this->orderRepositoryMock, $this->googleLocationApiMock)
         );
         $this->params = [
             'origin' => [$this->startLatitude, $this->startLongitude],
@@ -48,14 +51,24 @@ class CreateOrderTest extends TestCase
         ];
         $this->order = factory(Order::class)->make(
             [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 0,
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 0,
             ]
         );
+    }
+
+    private function createGoogleApiLocationMock()
+    {
+        $this->googleLocationApiMock->shouldReceive('calculateDistance')->withAnyArgs()->once()
+            ->andReturn(new Response(
+                $status = 200,
+                $headers = [],
+                File::get(base_path('tests/stubs/success.json'))
+            ));
     }
 
     /**
@@ -80,6 +93,7 @@ class CreateOrderTest extends TestCase
     public function createOrderSuccessfulTest()
     {
         echo "\nOrder is successfully created test.\n";
+        $this->createGoogleApiLocationMock();
         $this->orderRepositoryMock->shouldReceive('create')->withAnyArgs()->once()
             ->andReturn($this->order);
         $request = $this->createRequest($this->params);
@@ -122,9 +136,7 @@ class CreateOrderTest extends TestCase
     public function exceptionIsThrownWhenProperInputsAreNotProvidedInThrOrderRepository()
     {
         echo "\n Test for checking returned exception from repository is properly handeled or not.\n";
-        $this->withExceptionHandling();
-        $this->orderRepositoryMock->shouldReceive('create')->withAnyArgs()->once()
-            ->andThrow(new Exception());
+        $this->createGoogleApiLocationMock();
         $request = $this->createRequest($this->params);
         $response = $this->orderControllerMock->createOrder($request);
         $this->assertEquals(400, $response->getStatusCode());
@@ -144,9 +156,10 @@ class CreateOrderTest extends TestCase
         $request = new CreateOrderRequest();
         $this->assertEquals(
             [
-            'origin' => ['bail', 'required', 'array', 'min:2', 'max:2', new StartLatitudeLongitudeValidation],
-            'destination' => ['bail', 'required', 'array', 'min:2', 'max:2', new EndLatitudeLongitudeValidation]
-            ], $request->rules()
+                'origin' => ['bail', 'required', 'array', 'min:2', 'max:2', new StartLatitudeLongitudeValidation],
+                'destination' => ['bail', 'required', 'array', 'min:2', 'max:2', new EndLatitudeLongitudeValidation]
+            ],
+            $request->rules()
         );
     }
 
@@ -164,15 +177,16 @@ class CreateOrderTest extends TestCase
         $request = new CreateOrderRequest();
         $this->assertEquals(
             [
-            'origin.required' => 'Origin values are required',
-            'origin.array' => 'Origin values must be in array form',
-            'origin.min' => 'Origin must have two elements',
-            'origin.max' => 'Origin must have only two elements',
-            'destination.required'  => 'Destination values are required',
-            'destination.array' => 'Destination values must be in array form',
-            'destination.min' => 'Destination must have two elements',
-            'destination.max' => 'Destination must have only two elements',
-            ], $request->messages()
+                'origin.required' => 'Origin values are required',
+                'origin.array' => 'Origin values must be in array form',
+                'origin.min' => 'Origin must have two elements',
+                'origin.max' => 'Origin must have only two elements',
+                'destination.required'  => 'Destination values are required',
+                'destination.array' => 'Destination values must be in array form',
+                'destination.min' => 'Destination must have two elements',
+                'destination.max' => 'Destination must have only two elements',
+            ],
+            $request->messages()
         );
     }
 
@@ -191,13 +205,14 @@ class CreateOrderTest extends TestCase
         $data = $order->toArray();
         $this->assertInstanceOf(Order::class, $order);
         $this->assertDatabaseHas(
-            'orders', [
-            'start_latitude' => $this->startLatitude,
-            'start_longitude' => $this->startLongitude,
-            'end_latitude' => $this->endLatitude,
-            'end_longitude' => $this->endLongitude,
-            'distance_in_meters' => $this->distance,
-            'status' => 0,
+            'orders',
+            [
+                'start_latitude' => $this->startLatitude,
+                'start_longitude' => $this->startLongitude,
+                'end_latitude' => $this->endLatitude,
+                'end_longitude' => $this->endLongitude,
+                'distance_in_meters' => $this->distance,
+                'status' => 0,
             ]
         );
         $this->assertIsArray($data);
@@ -292,7 +307,7 @@ class CreateOrderTest extends TestCase
         echo "\nTesting guzzle request is sent or not .\n";
         $mock = new MockHandler(
             [
-            new Response(200, [], 'The body!'),
+                new Response(200, [], 'The body!'),
             ]
         );
 

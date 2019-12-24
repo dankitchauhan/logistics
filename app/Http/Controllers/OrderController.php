@@ -45,9 +45,10 @@ class OrderController extends Controller
      *
      * @param OrderRepository $orderRepository Instance of order repository class
      */
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepository $orderRepository, GoogleLocationApi $googleLocationApi)
     {
         $this->orderRepository = $orderRepository;
+        $this->googleLocationApi = $googleLocationApi;
     }
 
     /**
@@ -101,15 +102,14 @@ class OrderController extends Controller
                 Response::HTTP_BAD_REQUEST
             );
         }
-        $googleLocationApi = new GoogleLocationApi(new \GuzzleHttp\Client);
-        $response = $googleLocationApi
+
+        $response = $this->googleLocationApi
             ->calculateDistance(
                 $data['origin'][0],
                 $data['origin'][1],
                 $data['destination'][0],
                 $data['destination'][1]
             );
-
         $result = (json_decode($response->getBody(), true));
         if (isset($result['error_message'])) {
             return response()->json(
